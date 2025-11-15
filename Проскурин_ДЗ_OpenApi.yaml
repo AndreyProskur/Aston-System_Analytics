@@ -1,0 +1,181 @@
+openapi: 3.0.0
+info: 
+  title: Онлайн-магазин
+  version: 0.0.1
+servers:
+  - url: http://localhost:5020/api/v1
+    description: Dev server
+paths:
+  /products:
+    get:
+      summary: Метод получения товаров
+      tags: 
+        - Products
+      operationId: getAllProducts
+      responses:
+        '200': 
+          description: Успешный ответ со списком товаров
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Products"
+        'default':
+          description: Всё нестандартное
+          content:
+             application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Метод создания товаров
+      tags: 
+        - Products
+      operationId: addNewProduct
+      requestBody:
+        required: True
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+      responses:
+        '200': 
+          description: Успешный ответ с одним товаров
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        'default':
+          description: Всё нестандартное
+          content:
+             application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /product/{product_id}:
+    get:
+      summary: Метод получения товара по id
+      tags: 
+        - Products
+      operationId: getProductsbyId
+      parameters: 
+        - name: product_id
+          in: path
+          required: True
+          description: Идентификатор товара
+          schema: 
+            type: string
+          example: UGG-BB-PUR-07
+      responses:
+        '200': 
+          description: Успешный ответ с одним товаров
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        'default':
+          description: Всё нестандартное
+          content:
+             application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: Метод обновления информации о товаре
+      tags: 
+        - Products
+      operationId: updateProductInfobyId
+      parameters: 
+        - name: product_id
+          in: path
+          required: True
+          description: Идентификатор товара
+          schema: 
+            type: string
+          example: UGG-BB-PUR-07
+      requestBody:
+        required: True
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+      responses:
+        '200': 
+          description: Успешное обновление информации о товаре
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        'default':
+          description: Всё нестандартное
+          content:
+             application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: Метод удаления товара
+      tags: 
+        - Products
+      operationId: deleteProductbyId
+      parameters: 
+        - name: product_id
+          in: path
+          required: True
+          description: Идентификатор товара
+          schema: 
+            type: string
+          example: UGG-BB-PUR-07
+      responses:
+        '200': 
+          description: Успешное удаление
+          content:
+            application/json: {}
+        'default':
+          description: Всё нестандартное
+          content:
+             application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+                
+                
+components: 
+  schemas:
+    Product:
+      type: object
+      required:
+        - name
+        - product_id
+        - price
+        - status
+      properties:
+        product_id:
+          type: string
+          example: UGG-BB-PUR-07
+        name:
+          type: string
+          example: Шкаф
+        status: 
+          type: string
+          enum:
+            - Новый
+            - БУ
+          description: Состояние товара
+        price:
+          type: integer
+          example: 123
+        created_at:
+          type: string
+          format: 2025-09-11
+    Products:
+      type: array
+      items: 
+        $ref: "#/components/schemas/Product"
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: Bad Request
+          
