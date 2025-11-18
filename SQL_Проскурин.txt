@@ -1,0 +1,48 @@
+CREATE TABLE products(
+	product_id INT PRIMARY KEY AUTO_INCREMENT,
+	product_name VARCHAR(40),
+	category VARCHAR(40),
+	price DECIMAL(7, 2)
+);
+
+INSERT INTO products(product_name, category, price)
+VALUES ('Laptop', 'Electronics', 1000.00),
+	('Smartphone', 'Electronics', 500.00),
+	('Table', 'Furniture', 150.00),
+	('Chair', 'Furniture', 75.00);
+
+CREATE TABLE orders(
+	order_id INT PRIMARY KEY AUTO_INCREMENT,
+	product_id INT,
+	quantity INT,
+	order_date DATE,
+	FOREIGN KEY (product_id) REFERENCES products (product_id)
+);
+
+INSERT INTO orders(product_id, quantity, order_date)
+VALUES (1, 2, '2023-01-15'),
+	(2, 1, '2023-02-20'),
+	(3, 4, '2023-03-05'),
+	(4, 3, '2023-04-10'),
+	(1, 1, '2023-05-22');
+    
+SELECT 
+    p.product_name, 
+    p.category, 
+    SUM(o.quantity) AS count_order  
+FROM products p 
+LEFT JOIN orders o ON p.product_id = o.product_id 
+GROUP BY p.product_name, p.category;
+
+
+SELECT 
+	p.product_name,
+    p.category,
+    SUM(o.quantity) * p.price AS sum_of_sell
+FROM products p 
+JOIN orders o ON p.product_id = o.product_id 
+GROUP BY p.product_name, p.category, p.price;
+
+SELECT p.product_name, p.category, o.quantity, o.order_date FROM orders o
+JOIN products p ON (p.product_id = o.product_id)
+WHERE YEAR(order_date) = 2023 AND MONTH(order_date) = 3;
